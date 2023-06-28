@@ -3,6 +3,7 @@ package ucenter
 import (
 	"context"
 	"github.com/jinzhu/copier"
+	"go-zero-api/common/errorx"
 
 	"go-zero-api/api/code/internal/svc"
 	"go-zero-api/api/code/internal/types"
@@ -30,6 +31,8 @@ func (l *PathParamLogic) PathParam(req *types.PathReq) (resp *types.BaseModelJso
 		resp := &types.BaseModelJson{}
 		copier.Copy(resp, req)
 		return resp, nil
+	} else {
+		return nil, errorx.NewDefaultError(errorx.ParamErrorCode)
 	}
 	return nil, nil
 }
