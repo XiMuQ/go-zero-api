@@ -3,10 +3,10 @@ module go-zero-api
 go 1.20
 
 require (
-	github.com/google/uuid v1.3.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/satori/go.uuid v1.2.0
 	github.com/zeromicro/go-zero v1.5.3
+	github.com/zeromicro/x v0.0.0-20230424055333-01c7fb9548d4
 )
 
 require (
@@ -18,6 +18,7 @@ require (
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/google/uuid v1.3.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect
