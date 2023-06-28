@@ -1,0 +1,126 @@
+syntax = "v1"
+
+info(
+	title : "go-zero-api"
+	desc: "ucenter"
+	author: "ximuqi"
+	email: "xxx"
+	version: "0.0.1"
+)
+
+type (
+	/* 1 公用类（json） */
+	BaseModelJson {
+		Id   int64  `json:"id"`            // id
+		Name string `json:"name,optional"` // 名称
+		Data string `json:"data,optional"` // 数据
+	}
+
+	/* 2 公用类（form） */
+	BaseModelForm {
+		Id   int64  `form:"id"`            // id
+		Name string `form:"name,optional"` // 名称
+		Data string `form:"data,optional"` // 数据
+	}
+
+	/* 3 公用类 Path */
+	PathReq {
+		Id   int64  `path:"id"`   // id
+		Name string `path:"name"` // 名称
+	}
+
+	/* 4 上传文件 */
+	FileUploadReq {
+		Id       int64   `form:"id"`                // 父级-id
+		Type     int64   `form:"type,optional"`     // 类型 1：证书文件；2：私钥文件
+		FileList []*byte `form:"fileList,optional"` // 文件列表
+	}
+
+	/* 5 下载/预览文件 */
+	FileShowReq {
+		Id      int64  `form:"id"`               // 文件-id
+		FileUrl string `form:"fileUrl,optional"` // 文件地址
+	}
+
+	/* 6 用户账号密码登录 model */
+	UserModel {
+		Account  string `json:"account"`                      // 账号
+		Password string `json:"password"`                     // 密码
+		Gender   int64  `json:"gender,options=1:2:3"`         // 性别 1：未设置；2：男性；3：女性
+		Current  int64  `json:"current,optional,default=1"`   // 当前页码
+		PageSize int64  `json:"pageSize,optional,default=20"` // 每页数量
+	}
+
+	/* 7 用户登录返回 model */
+	UserLoginResp {
+		Id           int64  `json:"id"`           // 用户id
+		Account      string `json:"account"`      // 账号
+		Username     string `json:"username"`     // 登录账号
+		Gender       int64  `json:"gender"`       // 性别 1：未设置；2：男性；3：女性
+		Avatar       string `json:"avatar"`       // 头像
+		AccessToken  string `json:"token"`        // token
+		AccessExpire int64  `json:"accessExpire"` // 过期时间戳
+		RefreshAfter int64  `json:"refreshAfter"` //
+	}
+)
+
+@server(
+	middleware: Check
+	group: ucenter
+	prefix: /ucenter
+)
+service uCenter {
+	@doc(
+		summary: "1 json参数"
+	)
+	@handler jsonParam
+	post /jsonParam (BaseModelJson) returns (BaseModelJson)
+
+	@doc(
+		summary: "2 表单参数（post）"
+	)
+	@handler formParamPost
+	post /formParamPost (BaseModelForm) returns (BaseModelJson)
+
+	@doc(
+		summary: "3 表单参数（Get）"
+	)
+	@handler formParamGet
+	get /formParamGet (BaseModelForm) returns (BaseModelJson)
+
+	@doc(
+		summary: "4 path参数"
+	)
+	@handler pathParam
+	get /pathParam/:id/:name (PathReq) returns (BaseModelJson)
+
+	@doc(
+		summary: "5 文件上传"
+	)
+	@handler uploadFile
+	post /uploadFile (FileUploadReq) returns (BaseModelJson)
+
+	@doc(
+		summary: "6 文件下载"
+	)
+	@handler downloadFile
+	get /downloadFile (FileShowReq)
+
+	@doc(
+		summary: "7 文件预览"
+	)
+	@handler previewFile
+	get /previewFile (FileShowReq)
+}
+
+@server(
+	group: group2
+	prefix: /group2
+)
+service uCenter {
+	@doc(
+		summary: "8 登录"
+	)
+	@handler login
+	post /login (UserModel) returns (UserLoginResp)
+}
