@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
+	"net/http"
 
 	"go-zero-api/api/code/internal/config"
 	"go-zero-api/api/code/internal/handler"
@@ -24,6 +26,13 @@ func main() {
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
+	// 全局中间件
+	server.Use(func(next http.HandlerFunc) http.HandlerFunc {
+		return func(w http.ResponseWriter, r *http.Request) {
+			logx.Info("全局中间件")
+			next(w, r)
+		}
+	})
 	handler.RegisterHandlers(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
